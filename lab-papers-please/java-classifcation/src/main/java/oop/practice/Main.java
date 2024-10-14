@@ -53,6 +53,7 @@ public class Main {
 }
 
 record Universe(
-    String name,
-    List<JsonNode> individuals
+        String name,
+        List<JsonNode> individuals
 ) { }
+
