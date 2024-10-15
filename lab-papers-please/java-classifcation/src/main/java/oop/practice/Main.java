@@ -199,3 +199,4 @@ class Universe {
     this.individuals.add(individual);
   }
 }
+//this the aka plan i will make it better for the future
