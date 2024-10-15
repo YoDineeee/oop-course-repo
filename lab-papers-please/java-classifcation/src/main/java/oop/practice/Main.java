@@ -1,5 +1,6 @@
 package oop.practice;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -37,7 +38,14 @@ public class Main {
     System.out.println("Please categorize the individuals. Enter 'exit' to quit.");
 
     for (JsonNode entry : data) {
-      String entryAsString = entry.toString();
+      Individual individual = null;
+      try {
+        // Convert JsonNode to Individual object
+        individual = mapper.treeToValue(entry, Individual.class);
+      } catch (JsonProcessingException e) {
+        System.err.println("Error processing JSON entry: " + e.getMessage());
+        continue;
+      }
 
       // Read user input
       String userInput = "";
@@ -57,16 +65,16 @@ public class Main {
             // Categorize the entry based on valid input
             switch (category) {
               case 1:
-                starWars.individuals().add(entry);
+                starWars.addIndividual(individual);
                 break;
               case 2:
-                hitchhikers.individuals().add(entry);
+                hitchhikers.addIndividual(individual);
                 break;
               case 3:
-                marvel.individuals().add(entry);
+                marvel.addIndividual(individual);
                 break;
               case 4:
-                rings.individuals().add(entry);
+                rings.addIndividual(individual);
                 break;
             }
           }
@@ -75,8 +83,8 @@ public class Main {
         }
       }
 
-      // Display the entry only if the input was valid
-      System.out.println("You added: " + entryAsString);
+      // Display the individual only if the input was valid
+      System.out.println("You added: " + individual);
     }
 
     scanner.close();
@@ -94,7 +102,100 @@ public class Main {
   }
 }
 
-record Universe(
-        String name,
-        List<JsonNode> individuals
-) { }
+// The Individual class representing each character from the JSON
+class Individual {
+  private int id;
+  private boolean isHumanoid;
+  private String planet;
+  private int age;
+  private List<String> traits;
+
+  // Constructors, Getters, and Setters
+  public Individual() {}
+
+  public Individual(int id, boolean isHumanoid, String planet, int age, List<String> traits) {
+    this.id = id;
+    this.isHumanoid = isHumanoid;
+    this.planet = planet;
+    this.age = age;
+    this.traits = traits;
+  }
+
+  public int getId() {
+    return id;
+  }
+
+  public void setId(int id) {
+    this.id = id;
+  }
+
+  public boolean isHumanoid() {
+    return isHumanoid;
+  }
+
+  public void setHumanoid(boolean humanoid) {
+    isHumanoid = humanoid;
+  }
+
+  public String getPlanet() {
+    return planet;
+  }
+
+  public void setPlanet(String planet) {
+    this.planet = planet;
+  }
+
+  public int getAge() {
+    return age;
+  }
+
+  public void setAge(int age) {
+    this.age = age;
+  }
+
+  public List<String> getTraits() {
+    return traits;
+  }
+
+  public void setTraits(List<String> traits) {
+    this.traits = traits;
+  }
+
+  @Override
+  public String toString() {
+    return "Individual{" +
+            "id=" + id +
+            ", isHumanoid=" + isHumanoid +
+            ", planet='" + planet + '\'' +
+            ", age=" + age +
+            ", traits=" + traits +
+            '}';
+  }
+}
+
+// The Universe class, now storing a list of Individual objects
+class Universe {
+  private String name;
+  private List<Individual> individuals;
+
+  public Universe(String name, List<Individual> individuals) {
+    this.name = name;
+    this.individuals = individuals;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public List<Individual> getIndividuals() {
+    return individuals;
+  }
+
+  public void addIndividual(Individual individual) {
+    this.individuals.add(individual);
+  }
+}
